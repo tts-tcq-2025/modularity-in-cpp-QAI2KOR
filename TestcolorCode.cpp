@@ -1,31 +1,28 @@
-#include "ColorPair.h"
+#include <iostream>
+#include <assert.h>
+#include <string>
+#include "ColorData.h"
+#include "ColorCodingManual.h"
+#include "ColorCoderTests.h"
 
-namespace TelCoColorCoder
+void TestColorMapper() 
 {
-    const char* MajorColorNames[] = {"White", "Red", "Black", "Yellow", "Violet"};
-    const char* MinorColorNames[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
-    int numberOfMajorColors = 5;
-    int numberOfMinorColors = 5;
+    TelCoColorCoder::ColorPair colorPair = TelCoColorCoder::GetColorFromPairNumber(4);
+    assert(colorPair.getMajor() == TelCoColorCoder::WHITE);
+    assert(colorPair.getMinor() == TelCoColorCoder::BROWN);
+    
+    assert(TelCoColorCoder::GetPairNumberFromColor(TelCoColorCoder::BLACK, TelCoColorCoder::ORANGE) == 12);
+    std::cout << "✓ Color mapper tests passed\n";
+}
 
-    ColorPair::ColorPair(MajorColor major, MinorColor minor):
-        majorColor(major), minorColor(minor) {}
-
-    MajorColor ColorPair::getMajor() {
-        return majorColor;
-    }
-    MinorColor ColorPair::getMinor() {
-        return minorColor;
-    }
-
-    std::string ColorPair::ToString() {
-        return std::string(MajorColorNames[majorColor]) + " " + MinorColorNames[minorColor];
-    }
-    ColorPair GetColorFromPairNumber(int pairNumber) {
-        int zeroBasedPairNumber = pairNumber - 1;
-        MajorColor major = (MajorColor)(zeroBasedPairNumber / numberOfMinorColors);
-        MinorColor minor = (MinorColor)(zeroBasedPairNumber % numberOfMinorColors);
-        return ColorPair(major, minor);
-    }
+void TestColorCodingManual() 
+{
+    std::string manual = TelCoColorCoder::FormatColorCodingManual();
+    assert(manual.find("Pair Number | Major Color | Minor Color") != std::string::npos);
+    assert(manual.find("White") != std::string::npos);
+    assert(manual.find("Violet") != std::string::npos);
+    std::cout << "✓ Reference manual tests passed\n";
+}
     int GetPairNumberFromColor(MajorColor major, MinorColor minor) {
         return major * numberOfMinorColors + minor + 1;
     }
